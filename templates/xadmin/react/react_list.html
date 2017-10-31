@@ -1,0 +1,92 @@
+{% extends 'xadmin/views/model_list.html' %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
+
+{% load xadmin_tags %}
+
+{% block content %}
+<div class="content-toolbar btn-toolbar pull-right clearfix">
+    {% view_block 'top_toolbar' %}
+    {% block toolbar_column %}
+    <div class="btn-group">
+        <a class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" href="#">
+            <i class="fa fa-list-alt"></i> {% trans "Columns" %} <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu model_fields pull-right" role="menu" aria-labelledby="dLabel">
+            <li><a href="{{clean_select_field_url}}"><i class="fa fa-refresh"></i> {% trans "Restore Selected" %}</a></li>
+            <li class="divider"></li>
+            {% for f, selected, flink in model_fields %}
+            <li><a href="{{flink}}">
+                {% if selected %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-blank"></i>{% endif %}
+                {{f.verbose_name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endblock toolbar_column %}
+    {% block toolbar_layouts %}
+    <div class="btn-group layout-btns" data-toggle="buttons">
+        <label class="btn btn-default btn-sm layout-normal active">
+            <input type="radio"> <i class="fa fa-th-large"></i>
+        </label>
+        <label class="btn btn-default btn-sm layout-condensed">
+            <input type="radio"> <i class="fa fa-th"></i>
+        </label>
+        {% view_block 'top_layout_btns' %}
+    </div>
+    {% endblock toolbar_layouts %}
+    {% block toolbar_fullscreen %}
+    <div class="btn-group layout-btns" data-toggle="buttons-checkbox">
+        <button type="button" class="btn btn-default btn-sm layout-full"><i class="fa fa-expand"></i></button>
+        {% view_block 'top_check_btns' %}
+    </div>
+    {% endblock toolbar_fullscreen %}
+    {% view_block 'top_btns' %}
+</div>
+
+<form id="changelist-form" action="" method="post"{% view_block 'result_list_form' %}>{% csrf_token %}
+{% view_block 'results_top' %}
+<div id="results-list" class="results table-responsive">
+    {% block results_grid %}
+    <table class="table table-bordered table-striped table-hover">
+        {% block results_grid_head %}
+        <thead>
+        <tr>{% for o in result_headers.cells %}
+            <th {{o.tagattrs}}>
+                {% if o.btns %}
+                <div class="pull-right">
+                    {% for b in o.btns %}
+                    {{b|safe}}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if o.menus %}
+                <div class="dropdown pull-left">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        {{ o.label }}
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        {% for m in o.menus %}
+                        {{m|safe}}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% else %}
+                {{ o.label }}
+                {% endif %}
+            </th>{% endfor %}
+        </tr>
+        {% view_block 'result_head' %}
+        </thead>
+        {% endblock results_grid_head %}
+        {% block results_grid_body %}
+        <tbody id="results-list">
+        </tbody>
+        {% endblock results_grid_body %}
+    </table>
+    {% endblock results_grid %}
+</div>
+{% view_block 'results_bottom' %}
+</form>
+    {% render_bundle 'main' %}
+{% endif %}
+{% endblock %}
