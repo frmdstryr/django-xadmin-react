@@ -125,7 +125,7 @@ class ModalList extends React.Component {
     if (!this.state.connected) {
       return <div className="alert alert-warning" style={{marginTop:70}} role="alert">
         <b>Connecting... Please wait.</b><br />
-        If this does not go away please request help at <a href="mailto:dev@smirta.com">dev@smirta.com</a>
+        If this does not go away please request help at <a href="mailto:admin@example.com">admin@example.com</a>
       </div>;
 
     }
